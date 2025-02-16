@@ -71,10 +71,16 @@ def call_left(event):
 		tcpClicSock.send(('4').encode())
 		stop_stu = 0
 
+def call_head_left(event):
+	print("head left : 12")
+	tcpClicSock.send(('12').encode())
+
+def call_head_right(event):
+	print("head right : 13")
+	tcpClicSock.send(('13').encode())		
 
 def call_steady(event):
 	tcpClicSock.send(('5').encode())
-
 
 def call_stop(event):
 	global stop_stu
@@ -336,6 +342,16 @@ def loop():					  #GUI
 		Btn1.place(x=100,y=230)
 		Btn2.place(x=30,y=230)
 		Btn3.place(x=170,y=230)
+		
+		
+		
+		Btn4 = tk.Button(root, width=8, text='H Left',fg=color_text,bg=color_btn,relief='ridge')
+		Btn5 = tk.Button(root, width=8, text='H Right',fg=color_text,bg=color_btn,relief='ridge')
+
+		Btn4.place(x=30,y=265)
+		Btn5.place(x=170,y=265)
+		
+		
 
 		Btn0.bind('<ButtonPress-1>', call_forward)
 		Btn1.bind('<ButtonPress-1>', call_back)
@@ -359,6 +375,14 @@ def loop():					  #GUI
 		root.bind('<KeyRelease-a>', call_stop)
 		root.bind('<KeyRelease-d>', call_stop)
 		root.bind('<KeyRelease-s>', call_stop)
+
+
+		Btn4.bind('<ButtonPress-1>', call_head_left)
+		Btn5.bind('<ButtonPress-1>', call_head_right)
+		Btn4.bind('<ButtonRelease-1>', call_stop)
+		Btn5.bind('<ButtonRelease-1>', call_stop)
+
+
 
 		Btn14= tk.Button(root, width=8,height=2, text='Connect',fg=color_text,bg=color_btn,command=connect_click,relief='ridge')
 		Btn14.place(x=283,y=15)						  #Define a Button and put it in position
