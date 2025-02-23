@@ -101,57 +101,6 @@ def call_ultra(event):
 	tcpClicSock.send(('7').encode())
 
 
-def new_number2view(info):
-	dis_list=[]
-	f_list=[]
-
-	total_number = int(info[2:])
-
-	can_scan_1 = tk.Canvas(root,bg=color_can,height=250,width=320,highlightthickness=0) #define a canvas
-	can_scan_1.place(x=30,y=300) #Place the canvas
-	line = can_scan_1.create_line(0,62,320,62,fill='darkgray')   #Draw a line on canvas
-	line = can_scan_1.create_line(0,124,320,124,fill='darkgray') #Draw a line on canvas
-	line = can_scan_1.create_line(0,186,320,186,fill='darkgray') #Draw a line on canvas
-	line = can_scan_1.create_line(160,0,160,250,fill='darkgray') #Draw a line on canvas
-	line = can_scan_1.create_line(80,0,80,250,fill='darkgray')   #Draw a line on canvas
-	line = can_scan_1.create_line(240,0,240,250,fill='darkgray') #Draw a line on canvas
-
-	for i in range (total_number,0,-1):   #Scale the result to the size as canvas
-		dis_info_get = (tcpClicSock.recv(BUFSIZ)).decode()
-		print(dis_info_get)
-		if 'F' in dis_info_get:
-			break
-
-		try:
-			dis_info_get = int(dis_info_get)/100
-			if dis_info_get > 0:
-				len_dis_1 = int((dis_info_get/x_range)*250)						  #600 is the height of canvas
-				pos	 = int((i/total_number)*320)								#740 is the width of canvas
-				pos_ra  = int(((i/total_number)*140)+20)						   #Scale the direction range to (20-160)
-				len_dis = int(len_dis_1*(math.sin(math.radians(pos_ra))))		   #len_dis is the height of the line
-
-				x0_l,y0_l,x1_l,y1_l=pos,(250-len_dis),pos,(250-len_dis)			 #The position of line
-				x0,y0,x1,y1=(pos+3),(250-len_dis+3),(pos-3),(250-len_dis-3)		 #The position of arc
-
-				if pos <= 160:													  #Scale the whole picture to a shape of sector
-					pos = 160-abs(int(len_dis_1*(math.cos(math.radians(pos_ra)))))
-					x1_l= (x1_l-math.cos(math.radians(pos_ra))*130)
-				else:
-					pos = abs(int(len_dis_1*(math.cos(math.radians(pos_ra)))))+160
-					x1_l= x1_l+abs(math.cos(math.radians(pos_ra))*130)
-
-				y1_l = y1_l-abs(math.sin(math.radians(pos_ra))*130)			  #Orientation of line
-
-				line = can_scan_1.create_line(pos,y0_l,x1_l,y1_l,fill=color_line)   #Draw a line on canvas
-				point_scan = can_scan_1.create_oval((pos+3),y0,(pos-3),y1,fill=color_oval,outline=color_oval) #Draw a arc on canvas
-
-				can_tex_11=can_scan_1.create_text((27,178),text='%sm'%round((x_range/4),2),fill='#aeea00')	 #Create a text on canvas
-				can_tex_12=can_scan_1.create_text((27,116),text='%sm'%round((x_range/2),2),fill='#aeea00')	 #Create a text on canvas
-				can_tex_13=can_scan_1.create_text((27,54),text='%sm'%round((x_range*0.75),2),fill='#aeea00')  #Create a text on canvas
-		except:
-			pass
-
-
 def connection_thread():
 	global funcMode, Switch_3, Switch_2, Switch_1, SmoothMode
 	while 1:
@@ -181,10 +130,6 @@ def connection_thread():
 				canvas_rec=canvas_battery.create_rectangle(0,0,int((vot-6.7)/1.7*132),30,fill = '#FF8F00',width=0)
 			else:
 				pass
-
-		elif 'U:' in car_info:
-			new_number2view(car_info)
-
 
 		else:
 			pass
@@ -286,8 +231,8 @@ def loop():					  #GUI
 		target_color='#FF6D00'
 
 		root = tk.Tk()			#Define a window named root
-		root.title('Adeept Arduino Robot')	  #Main window title
-		root.geometry('380x580')  #Main window size, middle of the English letter x.
+		root.title('Hexapod Arduino Robot')	  #Main window title
+		root.geometry('450x380')  #Main window size, middle of the English letter x.
 		root.config(bg=color_bg)  #Set the background color of root window
 
 		try:
@@ -316,32 +261,20 @@ def loop():					  #GUI
 		l_ip_3.place(x=143,y=15)						 #Define a Label and put it in position
 
 		Btn_Steady = tk.Button(root, width=8, text='Steady',fg=color_text,bg=color_btn,relief='ridge')
-		Btn_Steady.place(x=284,y=195)
+		Btn_Steady.place(x=350,y=195)
 		Btn_Steady.bind('<ButtonPress-1>', call_steady)
 		root.bind('<KeyPress-f>', call_steady)
-
-		Btn_Ultra = tk.Button(root, width=8, text='Ultrasonic',fg=color_text,bg=color_btn,relief='ridge')
-		Btn_Ultra.place(x=284,y=230)
-		Btn_Ultra.bind('<ButtonPress-1>', call_ultra)
-		root.bind('<KeyPress-x>', call_ultra)
 
 		Btn0 = tk.Button(root, width=8, text='Forward',fg=color_text,bg=color_btn,relief='ridge')
 		Btn1 = tk.Button(root, width=8, text='Backward',fg=color_text,bg=color_btn,relief='ridge')
 		Btn2 = tk.Button(root, width=8, text='Left',fg=color_text,bg=color_btn,relief='ridge')
 		Btn3 = tk.Button(root, width=8, text='Right',fg=color_text,bg=color_btn,relief='ridge')
 
-		Btn_LeftSide = tk.Button(root, width=8, text='Auto',fg=color_text,bg=color_btn,relief='ridge')
-		Btn_LeftSide.place(x=30,y=195)
-		Btn_LeftSide.bind('<ButtonPress-1>', call_auto)
 
-		Btn_RightSide = tk.Button(root, width=8, text='Attack',fg=color_text,bg=color_btn,relief='ridge')
-		Btn_RightSide.place(x=170,y=195)
-		Btn_RightSide.bind('<ButtonPress-1>', call_attack)
-
-		Btn0.place(x=100,y=195)
-		Btn1.place(x=100,y=230)
+		Btn0.place(x=130,y=195)
+		Btn1.place(x=130,y=230)
 		Btn2.place(x=30,y=230)
-		Btn3.place(x=170,y=230)
+		Btn3.place(x=230,y=230)
 		
 		
 		
@@ -349,7 +282,7 @@ def loop():					  #GUI
 		Btn5 = tk.Button(root, width=8, text='H Right',fg=color_text,bg=color_btn,relief='ridge')
 
 		Btn4.place(x=30,y=265)
-		Btn5.place(x=170,y=265)
+		Btn5.place(x=230,y=265)
 		
 		
 
@@ -391,19 +324,6 @@ def loop():					  #GUI
 
 		var_R = tk.StringVar()
 		var_R.set(0)
-
-		can_scan = tk.Canvas(root,bg=color_can,height=250,width=320,highlightthickness=0) #define a canvas
-		can_scan.place(x=30,y=300) #Place the canvas
-		line = can_scan.create_line(0,62,320,62,fill='darkgray')   #Draw a line on canvas
-		line = can_scan.create_line(0,124,320,124,fill='darkgray') #Draw a line on canvas
-		line = can_scan.create_line(0,186,320,186,fill='darkgray') #Draw a line on canvas
-		line = can_scan.create_line(160,0,160,250,fill='darkgray') #Draw a line on canvas
-		line = can_scan.create_line(80,0,80,250,fill='darkgray')   #Draw a line on canvas
-		line = can_scan.create_line(240,0,240,250,fill='darkgray') #Draw a line on canvas
-
-		can_tex_11=can_scan.create_text((27,178),text='%sm'%round((x_range/4),2),fill='#aeea00')	 #Create a text on canvas
-		can_tex_12=can_scan.create_text((27,116),text='%sm'%round((x_range/2),2),fill='#aeea00')	 #Create a text on canvas
-		can_tex_13=can_scan.create_text((27,54),text='%sm'%round((x_range*0.75),2),fill='#aeea00')  #Create a text on canvas
 
 		global stat
 		if stat==0:			  # Ensure the mainloop runs only once
