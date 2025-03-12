@@ -51,7 +51,9 @@ class ClientApp(BoxLayout):
             threading.Thread(target=self.socket_connect, daemon=True).start()
     
     def socket_connect(self):
+        print("socket_connect")
         ip_adr = self.ip_input.text.strip()
+        print(ip_adr)
         if not ip_adr:
             self.status_label.text = 'Invalid IP'
             return
@@ -62,11 +64,14 @@ class ClientApp(BoxLayout):
         ADDR = (SERVER_IP, SERVER_PORT)
         
         self.tcpClicSock = socket(AF_INET, SOCK_STREAM)
+        print("debug")
         try:
+            print("connected")
             self.tcpClicSock.connect(ADDR)
             self.status_label.text = f'Connected to {SERVER_IP}'
             self.ip_stu = 0
         except Exception as e:
+            print("not connected")
             self.status_label.text = 'Connection Failed'
             print(e)
     
